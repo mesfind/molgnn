@@ -1,6 +1,6 @@
 # Ignore Mac system files
 .DS_store
-
+.gitignore
 # Ignore node_modules folder
 graphgym/
 final_models/
