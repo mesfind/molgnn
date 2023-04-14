@@ -8,13 +8,12 @@ import torch_geometric.transforms
 import torch_geometric.utils
 import torch_geometric.profile
 
-from .seed import seed_everything
-from .home import get_home_dir, set_home_dir
+from molgnn.seed import seed_everything
+from molgnn.home import get_home_dir, set_home_dir
 import molgnn.data
-from .pygdata import RedDB
-from .molgnn import MolGCNConv, MolGATConv
-from .molfeatures import GenMolGraph, GenMolecules, GenMolFeatures
-from .utils/utils.py import NoamLR
+from molgnn.pygdata import RedDB
+from molgnn.molgnn import MolGCNConv, MolGATConv
+from molgnn.molfeatures import GenMolGraph, GenMolecules, GenMolFeatures
 
 
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/

@@ -1,16 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 12 09:29:03 2022
 
-import os.path as osp
+@author: Mesfin Diro
+"""
+
+
+
 import torch
 from torch import Tensor
 import torch.nn.functional as F
 from torch.nn import Parameter
 from torch_geometric.nn import MessagePassing
 from torch_geometric.utils import remove_self_loops, add_self_loops  #, softmax
-from torch_scatter import scatter
 from torch_geometric.nn.inits import zeros, glorot
-from torch_geometric.typing import Adj, OptTensor, PairTensor
+from torch_geometric.typing import Adj
 from torch_scatter import scatter_add
-from torch_sparse import SparseTensor, fill_diag, matmul, mul
 from torch_geometric.utils import add_remaining_self_loops
 from torch_geometric.utils import softmax
 from torch_geometric.graphgym.config import cfg
@@ -21,11 +27,11 @@ import torch.nn as nn
 class MolGCNConv(MessagePassing):
     r""" General MolGCN Layer
     """
-    def __init__(self, in_channels:int, out_channels:int, edge_dim:int, improved:bool=False, bias:bool=True,**kwards):
-        super(GCNConv, self).__init__(aggr='add', **kwards)  # "Add" aggregation.
+    def __init__(self, in_channels:int, out_channels:int, edge_dim:int, improved:bool=False, cached=False, bias:bool=True,**kwards):
+        super(MolGCNConv, self).__init__(aggr='add', **kwards)  # "Add" aggregation.
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.edge_dim = edge_dim
+        self.edge_dim = edge_dim # new
         self.improved = improved
         self.cached = cached
         self.normalize = cfg.gnn.normalize_adj
@@ -43,7 +49,7 @@ class MolGCNConv(MessagePassing):
 
     def reset_parameters(self):
         glorot(self.weight)
-        glorot(self.edge_updated)  # added
+        glorot(self.edge_updated)  # new
         zeros(self.bias)
         self.cached_result = None
         self.cached_num_edges = None
@@ -102,16 +108,8 @@ class MolGCNConv(MessagePassing):
 
         # Start propagating messages
         x_msg =  self.propagate(x=x, edge_index=edge_index, edge_attr=edge_attr, norm=norm)
-
-        if cfg.gnn.self_msg == 'none':
-            return x_msg
-        elif cfg.gnn.self_msg == 'add':
-            return x_msg + x
-        elif cfg.gnn.self_msg == 'concat':
-            return x_msg + x_self
-        else:
-            raise ValueError('self_msg {} not defined'.format(
-                cfg.gnn.self_msg))   
+        return x_msg
+  
 
     def message(self, x_j, edge_attr, norm):   
         # Normalize node features (concat edge_attr)
@@ -124,13 +122,14 @@ class MolGCNConv(MessagePassing):
             return norm.view(-1, 1) * x_j if norm is not None else x_j   
        
 
-    def update(self, aggr_out):   # 4.2 Return node embeddings
-        aggr_out = torch.mm(aggr_out, self.edge_updated)   # new property added
+    def update(self, aggr_out):   #  Return node embeddings
         '''
         N x emb(out) = N x (emb(out)+edge_dim) @ (emb(out)+edge_dim) x emb(out)  
         For self Node  0(x_i): Based on the directed graph, Node 0 gets message from three edges and one self_loop
         For neighborhood Node(x_j):  only self_loop, since they do not get any message from others
         '''
+        aggr_out = torch.mm(aggr_out, self.edge_updated)   # new property added
+
         if self.bias is not None:
             return aggr_out + self.bias
         else:
@@ -143,11 +142,28 @@ class MolGCNConv(MessagePassing):
 
 
 class MolGATConv(MessagePassing):
+    r""" The MolGAT convolutional operator for molecular graphs molecular data
+    based on GAT model with attention mechanism with n-dimensional edge attr attributes
+    Args:
+       in_channels (int): Size of each input node feature.
+       out_channels (int): Size of each output node feature.
+       edge_dim (int): Size of each input edge feature.
+       improved (bool, optional): Whether to use the improved GAT convolution from the 
+           `"How to Find Your Friendly Neighborhood: Graph Attention Design with Self-Supervision" 
+           <https://arxiv.org/abs/2010.14403>`_ paper. (default: False)
+       cached (bool, optional): Whether to cache the computation for faster training. (default: False)
+       heads (int, optional): Number of attention heads to use. (default: 1)
+       negative_slope (float, optional): Negative slope coefficient for the leaky 
+           rectified linear unit (LeakyReLU). (default: 0.2)
+       dropout (float, optional): Dropout rate for the attention coefficients. (default: 0)
+       bias (bool, optional): Whether to include a bias term. (default: True)
+    """ 
     def __init__(self,
                  in_channels:int,
                  out_channels:int,
                  edge_dim:int,  # newly add 
                  improved:bool=False,
+                 cached=False,
                  heads: int =1,
                  negative_slope:float=0.2,
                  dropout:float=0.,
@@ -188,50 +204,7 @@ class MolGATConv(MessagePassing):
         glorot(self.att)
         glorot(self.edge_updated)  # new
         zeros(self.bias)
-    @staticmethod
-    def norm(edge_index, num_nodes, edge_weight=None, improved=False,
-             dtype=None):
-        if edge_weight is None:
-            edge_weight = torch.ones((edge_index.size(1), ), dtype=dtype,
-                                     device=edge_index.device)
-
-        fill_value = 1 if not improved else 2
-        edge_index, edge_weight = add_remaining_self_loops(
-            edge_index, edge_weight, fill_value, num_nodes)
-
-        row, col = edge_index
-        deg = scatter_add(edge_weight, row, dim=0, dim_size=num_nodes)
-        deg_inv_sqrt = deg.pow(-0.5)
-        deg_inv_sqrt[deg_inv_sqrt == float('inf')] = 0
-
-        return edge_index, deg_inv_sqrt[row] * edge_weight * deg_inv_sqrt[col]
-
-    def forward(self, x, edge_index, edge_attr,edge_weight=None, size=None):
-        # Add self-loops to the adjacency matrix (A' = A + I)
-        if size is None and torch.is_tensor(x):
-            edge_index, _ = remove_self_loops(edge_index)   # 2 x E
-            edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))   # 2 x (E+N)
-        
-        if self.normalize:
-            edge_index, norm = self.norm(edge_index, x.size(self.node_dim),
-                                             edge_weight, self.improved,
-                                             x.dtype)
-        else:
-            norm = edge_weight
-
-        # Add node's self information (value=0) to edge_attr
-        self_loop_edges = torch.zeros(x.size(0), edge_attr.size(1)).to(edge_index.device)   # N x edge_dim   # new
-        edge_attr = torch.cat([edge_attr, self_loop_edges], dim=0)  # (E+N) x edge_dim  # new
-
-        # Linearly transform node feature matrix (XΘ)
-        x = torch.mm(x, self.weight).view(-1, self.heads, self.out_channels)   # N x H x emb(out)
-
-        
-        # Start propagating messages
-        x_msg = self.propagate(edge_index, x=x, edge_attr=edge_attr, size=size)  # new
-                            # 2 x (E+N), N x H x emb(out), (E+N) x edge_dim, None
-        return x_msg
-
+   
     def message(self, x_i, x_j, size_i, edge_index_i, edge_attr):  # Compute normalization (concatenate + softmax)
         '''
         x_i, x_j: after linear x and expand edge (N+E) x H x emb(out)
@@ -242,6 +215,8 @@ class MolGATConv(MessagePassing):
         '''
 
         edge_attr = edge_attr.unsqueeze(1).repeat(1, self.heads, 1)  # (E+N) x H x edge_dim  # new
+
+    
         
         # (E+N) x H x (emb(out)+edge_dim)   # new
         if self.msg_direction == 'both':  
@@ -258,7 +233,6 @@ class MolGATConv(MessagePassing):
         if self.training and self.dropout > 0:
             alpha = F.dropout(alpha, p=self.dropout, training=True)
         xj_msg =  x_j* alpha.view(-1, self.heads, 1)
-        #msg = norm.view(-1, 1) * xj_msg if norm is not None else  xj_msg
         return xj_msg
 
     def update(self, aggr_out):   
@@ -277,6 +251,4 @@ class MolGATConv(MessagePassing):
         return '{}({}, {}, {}, heads={})'.format(self.__class__.__name__,
                                              self.in_channels,
                                              self.out_channels, self.edge_dim, self.heads)
-
-
 
