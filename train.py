@@ -14,8 +14,8 @@ import torch
 import torch.nn.functional as F
 from torch.optim import Adam
 from molgnn import  MolGATConv
-from pygdata import RedDB
-from molfeatures import  GenMolFeatures
+from molgnn.pygdata import RedDB
+from molgnn.molfeatures import  GenMolFeatures
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp
 from torch.utils.data import DataLoader
 from torch_geometric.nn.norm import BatchNorm
@@ -26,7 +26,7 @@ rdDepictor.SetPreferCoordGen(True)
 sns.set()
 
 #needed for show_mols
-from molgat.utils import NoamLR
+from molgnn.utils.utils import NoamLR
 
 
 

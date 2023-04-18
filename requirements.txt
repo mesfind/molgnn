@@ -1,0 +1,15 @@
+ase==3.22.1
+gpaw==22.8.0
+matplotlib==3.6.3
+numpy==1.24.2
+pandas==1.5.3
+rdkit==2022.9.4
+rdkit_pypi==2022.9.4
+scikit_learn==1.2.2
+scikit_learn==1.2.0
+setuptools==67.6.0
+torch==1.13.1
+torch_geometric==2.2.0
+torch_scatter==2.1.0
+torch_sparse==0.6.16
+tqdm==4.64.1
