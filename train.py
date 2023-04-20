@@ -198,7 +198,7 @@ for epoch in range(1, args.epochs):
         print(f'Epoch: {epoch:d}, Loss: {train_mse:.7f}, test MSE: {test_mse:.7f}')
         
 #save the model
-PATH='final_models/MolGAT30.pt'
+PATH='final_models/MolGAT.pt'
 torch.save(model.state_dict(),PATH)
 
 
