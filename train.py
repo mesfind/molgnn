@@ -14,20 +14,17 @@ import torch
 import torch.nn.functional as F
 from torch.optim import Adam
 from molgnn import  MolGATConv
-from molgnn.pygdata import RedDB
-from molgnn.molfeatures import  GenMolFeatures
+from pygdata import RedDB
+from molfeatures import  GenMolFeatures
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp
 from torch.utils.data import DataLoader
 from torch_geometric.nn.norm import BatchNorm
 import matplotlib.pyplot as plt
 import seaborn as sns
 from rdkit.Chem import rdDepictor
+from utils.utils import NoamLR
 rdDepictor.SetPreferCoordGen(True)
 sns.set()
-
-#needed for show_mols
-from molgnn.utils.utils import NoamLR
-
 
 
 ## Load the RedDB dataset in PyG graph format
