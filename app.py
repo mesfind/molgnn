@@ -197,26 +197,30 @@ st.markdown(linko, unsafe_allow_html=True)
 
 about_part = st.expander("About MolGAT", expanded=False)
 with about_part:
-    st.write('''
-	     #### About
-	     MolGAT is a type of deep learning for molecular graph based on GNN model to predict molecular properites. This version of MolGAT model is trained to predict LogS of  organaic  molecules
+    st.markdown('''
+    #### About
+    MolGAT is a deep learning model based on Graph Neural Networks (GNNs) for predicting molecular properties from molecular graphs. This particular version of the MolGAT model has been trained to predict the logarithm of the aqueous solubility (LogS) of organic molecules.
 
-	     #### Citation 
+    #### Citation
 
-	     Please cite our [paper](https://pubs.acs.org/doi/full/10.1021/acsomega.3c01295) (and the respective papers of the methods used) if you use this code in your own work:
+    If you use this code in your own work, please cite our paper and the respective papers of the methods used:
 
-		@article{doi:10.1021/acsomega.3c01295,
-		author = {Chaka, Mesfin Diro and Geffe, Chernet Amente and Rodriguez, Alex and Seriani, Nicola and Wu, Qin and Mekonnen, Yedilfana Setarge},
-		title = {High-Throughput Screening of Promising Redox-Active Molecules with MolGAT},
-		journal = {ACS Omega},
-		volume = {8},
-		number = {27},
-		pages = {24268-24278},
-		year = {2023},
-		doi = {10.1021/acsomega.3c01295},
-		}
+    - [Paper Title](https://pubs.acs.org/doi/full/10.1021/acsomega.3c01295)
+    - Other relevant papers
 
-	''')
+    ```
+    @article{doi:10.1021/acsomega.3c01295,
+    author = {Chaka, Mesfin Diro and Geffe, Chernet Amente and Rodriguez, Alex and Seriani, Nicola and Wu, Qin and Mekonnen, Yedilfana Setarge},
+    title = {High-Throughput Screening of Promising Redox-Active Molecules with MolGAT},
+    journal = {ACS Omega},
+    volume = {8},
+    number = {27},
+    pages = {24268-24278},
+    year = {2023},
+    doi = {10.1021/acsomega.3c01295},
+    }
+    ```
+    ''')
 
 
 contacts = st.sidebar.expander("Contact", expanded=False)
