@@ -18,7 +18,7 @@ from molgnn import MolGCNConv, MolGATConv
 import pandas as pd
 import numpy as np
 from custom_pygdata import AqSolDB2, AqSolDB
-from molfeatures import GenMolGraph, GenMolecules, GenMolFeatures
+from solfeatures import GenMolGraph, GenMolecules, GenMolFeatures
 import torch.nn as nn
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp
 from torch_geometric.nn import BatchNorm
@@ -106,6 +106,38 @@ sns.set()
 #
 #        out = self.fc_out(x)
 #        return out
+
+
+hidden_dim=512
+edge_dim = 12
+num_features=99
+class Net(torch.nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        torch.manual_seed(42)
+        self.conv1 = MolGATConv(num_features, hidden_dim, edge_dim,heads=3)
+        self.conv2 = MolGATConv(hidden_dim, hidden_dim, edge_dim,heads=3)
+        self.conv3 = MolGATConv(hidden_dim, hidden_dim, edge_dim,heads=3)
+        self.bn = BatchNorm(in_channels=hidden_dim)
+        self.fc1 = nn.Linear(hidden_dim*2, hidden_dim*2)
+        self.fc2 = nn.Linear(hidden_dim*2, hidden_dim*2)
+        self.fc3 = nn.Linear(hidden_dim*2,1)
+    def forward(self,x, edge_index, batch_index, edge_attr):
+        x = F.relu(self.conv1(x, edge_index,edge_attr))
+        x = F.relu(self.conv2(x, edge_index,edge_attr))
+        x = F.relu(self.conv3(x, edge_index,edge_attr))
+        x = self.bn(x)
+        # Global Pooling (stack different aggregations)
+        ### (reason) multiple nodes in one graph....
+        ## how to make 1 representation for graph??
+        ### use POOLING! 
+        ### ( gmp : global MAX pooling, gap : global AVERAGE pooling )
+        x = torch.cat([gmp(x, batch_index), 
+                            gap(x, batch_index)], dim=1)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x 
 
 
 
@@ -218,8 +250,11 @@ mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-#PATH='MolGAT_Sol30.pt'
-PATH='MolGAT_Sol.pt'
+PATH='final_models/MolGAT_Sol.pt'
+
+#load Redox prediction model
+# redox = Net().to(device)
+# redox.load_state_dict(torch.load(PATH,map_location={'cuda:0': 'cpu'}))
 
 model = MolGAT(node_features=30,
                             hidden_dim=192,
@@ -228,7 +263,7 @@ model = MolGAT(node_features=30,
                             num_fc_layers=4,
                             num_conv_layers=3,dropout=0.0).to(device)
 
-
+#Load Solubility prediction model
 model.load_state_dict(torch.load(PATH,map_location={'cuda:0': 'cpu'}))
 
 
