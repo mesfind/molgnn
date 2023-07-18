@@ -40,82 +40,7 @@ import base64
 torch.manual_seed(1234);
 import streamlit as st
 
-
-
-
-#MolGAT Model
-#class MolGAT(torch.nn.Module):
-#    def __init__(self, node_features, hidden_dim, edge_features, num_heads, num_conv_layers, num_fc_layers, dropout):
-#        super(MolGAT, self).__init__()
-#        torch.manual_seed(42)
-#        self.num_conv_layers = num_conv_layers
-#        self.num_fc_layers = num_fc_layers
-#        self.num_heads = num_heads
-#        self.hidden_dim = hidden_dim
-#        self.dropout = dropout
-#        self.conv_list = torch.nn.ModuleList()
-#
-#        self.conv_list.append(MolGATConv(node_features, hidden_dim, edge_features, heads=num_heads))
-#        for _ in range(num_conv_layers - 1):
-#            self.conv_list.append(MolGATConv(hidden_dim, hidden_dim, edge_features, heads=num_heads))
-#        self.fc_list = torch.nn.ModuleList()
-#        for i in range(num_fc_layers - 1):
-#            if i == 0:
-#                self.fc_list.append(nn.Linear(hidden_dim * 2, hidden_dim * 2))
-#            else:
-#                self.fc_list.append(nn.Linear(hidden_dim * 2, hidden_dim))
-#
-#        self.fc_out = nn.Linear(hidden_dim, 1)
-#
-#    def forward(self, x, edge_index, batch_index, edge_attr):
-#        #x = data.x
-#
-#        for i, conv in enumerate(self.conv_list):
-#            x = F.relu(conv(x, edge_index, edge_attr))
-#            if i == (len(self.conv_list) -1):
-#                x = F.dropout(x, p=self.dropout, training=self.training)
-#
-#        x = torch.cat([gmp(x, batch_index), gap(x, batch_index)], dim=1)
-#
-#        for fc in self.fc_list:
-#            x = F.relu(fc(x))
-#
-#        out = self.fc_out(x)
-#        return out
-
-
-hidden_dim=512
-edge_dim = 12
-num_features=99
-class Net(torch.nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        torch.manual_seed(42)
-        self.conv1 = MolGATConv(num_features, hidden_dim, edge_dim,heads=3)
-        self.conv2 = MolGATConv(hidden_dim, hidden_dim, edge_dim,heads=3)
-        self.conv3 = MolGATConv(hidden_dim, hidden_dim, edge_dim,heads=3)
-        self.bn = BatchNorm(in_channels=hidden_dim)
-        self.fc1 = nn.Linear(hidden_dim*2, hidden_dim*2)
-        self.fc2 = nn.Linear(hidden_dim*2, hidden_dim*2)
-        self.fc3 = nn.Linear(hidden_dim*2,1)
-    def forward(self,x, edge_index, batch_index, edge_attr):
-        x = F.relu(self.conv1(x, edge_index,edge_attr))
-        x = F.relu(self.conv2(x, edge_index,edge_attr))
-        x = F.relu(self.conv3(x, edge_index,edge_attr))
-        x = self.bn(x)
-        # Global Pooling (stack different aggregations)
-        ### (reason) multiple nodes in one graph....
-        ## how to make 1 representation for graph??
-        ### use POOLING! 
-        ### ( gmp : global MAX pooling, gap : global AVERAGE pooling )
-        x = torch.cat([gmp(x, batch_index), 
-                            gap(x, batch_index)], dim=1)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x 
-
-
+# molgat model
 
 class MolGAT(torch.nn.Module):
     def __init__(self, node_features, hidden_dim, edge_features, num_heads, num_conv_layers, num_fc_layers, dropout=None):
@@ -169,10 +94,6 @@ class MolGAT(torch.nn.Module):
 
 st.write("""# Solubility(LogS)  Prediction""")
 
-#image = Image.open('image.png')
-#st.image(image, use_column_width=True)
-
-
 ######################
 # Input molecules (Side Panel)
 ######################
@@ -190,7 +111,7 @@ SMILES = list(filter(None, SMILES))
 
 
 st.sidebar.write("""=======**OR**=======""")
-st.sidebar.write("""**Upload a csv file with a column named 'reactant_smiles'** (Max:1000)""")
+st.sidebar.write("""**Upload a csv file with a column named 'smiles'** (Max:1000)""")
 
 
 
@@ -198,7 +119,7 @@ uploaded_file = st.sidebar.file_uploader("Choose a file")
 if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
     # data
-    SMILES=data["reactant_smiles"]  
+    SMILES=data["smiles"]  
 
     # About dataset
     st.write('Data Dimensions: ' + str(data.shape[0]) + ' rows and ' + str(data.shape[1]) + ' columns.')
@@ -228,9 +149,6 @@ mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 PATH='final_models/MolGAT_Sol.pt'
 
-#load Redox prediction model
-# redox = Net().to(device)
-# redox.load_state_dict(torch.load(PATH,map_location={'cuda:0': 'cpu'}))
 
 model = MolGAT(node_features=30,
                             hidden_dim=192,
