@@ -12,7 +12,8 @@ from torch_geometric.data import InMemoryDataset, Data
 import numpy as np
 import re
 #from tqdm import tqdm
-from tqdm.notebook import tqdm
+#from tqdm.notebook import tqdm
+from tqdm import notebook as tqdm
 from rdkit.Chem import AllChem
 from rdkit import Chem, RDLogger
 from rdkit.Chem.rdchem import BondType as BT
