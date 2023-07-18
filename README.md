@@ -193,3 +193,18 @@ The model is trained using mean squared error (MSE) loss, and optimized using th
 python train.py
 
 ```
+
+Please cite our [paper](https://pubs.acs.org/doi/full/10.1021/acsomega.3c01295) (and the respective papers of the methods used) if you use this code in your own work:
+
+
+@article{doi:10.1021/acsomega.3c01295,
+author = {Chaka, Mesfin Diro and Geffe, Chernet Amente and Rodriguez, Alex and Seriani, Nicola and Wu, Qin and Mekonnen, Yedilfana Setarge},
+title = {High-Throughput Screening of Promising Redox-Active Molecules with MolGAT},
+journal = {ACS Omega},
+volume = {8},
+number = {27},
+pages = {24268-24278},
+year = {2023},
+doi = {10.1021/acsomega.3c01295},
+
+}
