@@ -305,8 +305,7 @@ about_part = st.expander("About MolGAT", expanded=False)
 with about_part:
     st.write('''
 	     #### About
-	     MolGAT is LogS prediction model for  redox-active molecules with  Graph convolution network
-	     
+	     MolGAT is a type of deep learning for molecular graph based on GNN model to predict molecular properites. This version of MolGAT model is trained to predict LogS of  organaic  molecules
 
 	     #### Developers
 
