@@ -205,8 +205,8 @@ with about_part:
 
     If you use this code in your own work, please cite our paper and the respective papers of the methods used:
 
-    - [Paper Title](https://pubs.acs.org/doi/full/10.1021/acsomega.3c01295)
-    - Other relevant papers
+    - [High-Throughput Screening of Promising Redox-Active Molecules with MolGAT](https://pubs.acs.org/doi/full/10.1021/acsomega.3c01295)
+    - [MolGAT Model Source code(https://github.com/mesfind/molgnn)
 
     ```
     @article{doi:10.1021/acsomega.3c01295,
