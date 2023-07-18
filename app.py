@@ -21,17 +21,10 @@ from custom_pygdata import AqSolDB2, AqSolDB
 from solfeatures import GenMolGraph, GenMolecules, GenMolFeatures
 import torch.nn as nn
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp
-from torch_geometric.nn import BatchNorm
 from torch.utils.data import DataLoader, Dataset, Sampler
 from torch_geometric.data import DataLoader
-import matplotlib.pyplot as plt
-from matplotlib.offsetbox import AnchoredText
-import seaborn as sns
 from rdkit import Chem
-from rdkit.Chem import Draw
-from rdkit.Chem import rdDepictor
 from torch.utils.data import random_split
-from rdkit.Chem import AllChem, PandasTools, Descriptors
 from rdkit.Chem.Draw import IPythonConsole
 # # misc
 from typing import Dict, Iterator, List, Optional, Union, OrderedDict, Tuple
@@ -43,22 +36,10 @@ from scipy import stats
 from IPython.display import SVG
 from random import Random
 from scipy import stats
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 #needed for show_mols
 from rdkit.Chem.Draw import rdMolDraw2D
-from IPython.display import SVG
-import cairosvg
 import math
 import base64
-#from tqdm.notebook import tqdm
-from sklearn.metrics import roc_auc_score
-#from utils import plot_confusion_matrix,draw_roc_curve, optimal_cutoff, summerize_results
-# optimizer
-#from utils import NoamLR
-from torch.utils.data.sampler import WeightedRandomSampler
-#IPythonConsole.ipython_useSVG = True
-rdDepictor.SetPreferCoordGen(True)
-sns.set()
 # Set the seed
 torch.manual_seed(1234);
 import streamlit as st
