@@ -27,12 +27,10 @@ from rdkit import Chem
 from torch.utils.data import random_split
 # # misc
 from typing import Dict, Iterator, List, Optional, Union, OrderedDict, Tuple
-
 from functools import reduce
 from sklearn.metrics import mean_squared_error
 from io import BytesIO
 from scipy import stats
-from IPython.display import SVG
 from random import Random
 from scipy import stats
 #needed for show_mols
