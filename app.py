@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jan 09 14:54:37 2022
+Created on Fri July 09 14:54:37 2023
 
 @author: Mesfin Diro
 """
@@ -25,7 +25,6 @@ from torch.utils.data import DataLoader, Dataset, Sampler
 from torch_geometric.data import DataLoader
 from rdkit import Chem
 from torch.utils.data import random_split
-from rdkit.Chem.Draw import IPythonConsole
 # # misc
 from typing import Dict, Iterator, List, Optional, Union, OrderedDict, Tuple
 
@@ -37,13 +36,11 @@ from IPython.display import SVG
 from random import Random
 from scipy import stats
 #needed for show_mols
-from rdkit.Chem.Draw import rdMolDraw2D
 import math
 import base64
 # Set the seed
 torch.manual_seed(1234);
 import streamlit as st
-sns.set()
 
 
 
