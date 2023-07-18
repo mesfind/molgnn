@@ -7,44 +7,24 @@ import torch_geometric.loader
 import torch_geometric.transforms
 import torch_geometric.utils
 import torch_geometric.profile
+<<<<<<< HEAD
+=======
+
+>>>>>>> 29045e8145848d15355692a1de3067107f206d91
 import molgnn.data
 from molgnn.pygdata import RedDB
 from molgnn.molgnn import MolGCNConv, MolGATConv
 from molgnn.molfeatures import GenMolGraph, GenMolecules, GenMolFeatures
+<<<<<<< HEAD
+=======
+from molgnn.utils.utils import NoamLR
+>>>>>>> 29045e8145848d15355692a1de3067107f206d91
 
 
-# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/
-# python/util/lazy_loader.py
-class LazyLoader(ModuleType):
-    def __init__(self, local_name, parent_module_globals, name):
-        self._local_name = local_name
-        self._parent_module_globals = parent_module_globals
-        super().__init__(name)
-
-    def _load(self):
-        module = import_module(self.__name__)
-        self._parent_module_globals[self._local_name] = module
-        self.__dict__.update(module.__dict__)
-        return module
-
-    def __getattr__(self, item):
-        module = self._load()
-        return getattr(module, item)
-
-    def __dir__(self):
-        module = self._load()
-        return dir(module)
-
-
-datasets = LazyLoader('data', globals(), 'molgnn.data')
-graphgym = LazyLoader('graphgym', globals(), 'molgnn.graphgym')
 
 __version__ = '1.0'
 
 __all__ = [
-    'seed_everything',
-    'get_home_dir',
-    'set_home_dir',
     'RedDB',
     'MolGCNConv',
     'MolGATConv',
