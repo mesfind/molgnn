@@ -205,7 +205,6 @@ with about_part:
 
 	     Please cite our [paper](https://pubs.acs.org/doi/full/10.1021/acsomega.3c01295) (and the respective papers of the methods used) if you use this code in your own work:
 
-		```
 		@article{doi:10.1021/acsomega.3c01295,
 		author = {Chaka, Mesfin Diro and Geffe, Chernet Amente and Rodriguez, Alex and Seriani, Nicola and Wu, Qin and Mekonnen, Yedilfana Setarge},
 		title = {High-Throughput Screening of Promising Redox-Active Molecules with MolGAT},
@@ -216,7 +215,6 @@ with about_part:
 		year = {2023},
 		doi = {10.1021/acsomega.3c01295},
 		}
-       ```
 
 	''')
 
