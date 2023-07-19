@@ -131,9 +131,6 @@ if uploaded_file is not None:
 
 
 
-
-st.sidebar.write("By Mesfin Diro")
-
 # st.header('Input SMILES')
 # SMILES[1:] # Skips the dummy first item
 
@@ -199,7 +196,12 @@ about_part = st.expander("About MolGAT", expanded=False)
 with about_part:
     st.markdown('''
     #### About
-    MolGAT is a deep learning model based on Graph Neural Networks (GNNs) for predicting molecular properties from molecular graphs. This particular version of the MolGAT model has been trained to predict the logarithm of the aqueous solubility (LogS) of organic molecules.
+    The MolGAT model is a type of deep learning architecture designed for predicting molecular properties from molecular graphs. 
+    In the context of molecular graphs, atoms are represented as nodes, and chemical bonds between atoms are represented as edges. 
+    The MolGAT model leverages this graph-based representation to learn and capture the complex relationships and patterns within molecules, enabling it to make predictions about various molecular properties. 
+    The MolGAT model has shown promising results in various molecular property prediction tasks and has been successfully applied to tasks like predicting solubility, redox potentials, and other important properties relevant to materials science and drug discovery. 
+    Its ability to handle graph-structured data makes it particularly useful for modeling molecules, which are inherently graph-like structures. 
+    This particular app version of the MolGAT model was trained to predict the logarithm of the aqueous solubility (LogS) of organic molecules. 
 
     #### Citation
 
@@ -230,6 +232,7 @@ with contacts:
              For any question you can contact us through email:
                  
              - [Mesfin Diro] (mailto: mesfin.diro@aau.edu.et)
+             - [Chernet Amente](mailto: chernet.amente@aau.edu.et)
              ''')
 
 
