@@ -131,17 +131,9 @@ if uploaded_file is not None:
 if len(SMILES)>1000:
     SMILES=SMILES[0:1000]
 
-try:
-    molecule = Chem.MolFromSmiles(SMILES)
-    if molecule is None:    
-        raise ValueError("SMILES is not valid.")
-    mol = GenMolecules(SMILES, pre_transform=GenMolFeatures())
-    mol_loader = DataLoader(mol, batch_size=1, shuffle=False)
-except ValueError as e:
-    print(e)
 
-#mol= GenMolecules(SMILES, pre_transform=GenMolFeatures())
-#mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
+mol= GenMolecules(SMILES, pre_transform=GenMolFeatures())
+mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
 
 
 
