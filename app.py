@@ -197,12 +197,10 @@ with about_part:
     st.markdown('''
     #### About
     The MolGAT model is a type of deep learning architecture designed for predicting molecular properties from molecular graphs. 
-    In the context of molecular graphs, atoms are represented as nodes, and chemical bonds between atoms are represented as edges. 
-    The MolGAT model leverages this graph-based representation to learn and capture the complex relationships and patterns within molecules, enabling it to make predictions about various molecular properties. 
-    The MolGAT model has shown promising results in various molecular property prediction tasks and has been successfully applied to tasks like predicting solubility, redox potentials, and other important properties relevant to materials science and drug discovery. 
-    Its ability to handle graph-structured data makes it particularly useful for modeling molecules, which are inherently graph-like structures. 
-    This particular app version of the MolGAT model was trained to predict the logarithm of the aqueous solubility (LogS) of organic molecules. 
-
+    It leverages an attention mechanism to selectively focus on crucial parts of the molecular graph with n-dimensional node and edge attributes, 
+    enabling accurate property predictions. This  graph-based representation help the model to learn and capture the complex relationships and patterns within molecules,
+    enabling it to make predictions about various molecular properties. Trained on a large dataset of molecular graphs, the MolGAT model has demonstrated success in tasks
+    such as solubility and redox potential prediction, making it a powerful tool in materials science and drug discovery.
     #### Citation
 
     If you use this code in your own work, please cite our paper and the respective papers of the methods used:
