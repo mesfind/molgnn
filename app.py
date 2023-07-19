@@ -133,10 +133,12 @@ if len(SMILES)>1000:
 
 try:
     molecule = Chem.MolFromSmiles(SMILES)
-        if molecule is None:	
-            raise ValueError("SMILES is not valid.")
-    mol= GenMolecules(SMILES, pre_transform=GenMolFeatures())
-    mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
+    if molecule is None:    
+        raise ValueError("SMILES is not valid.")
+    mol = GenMolecules(SMILES, pre_transform=GenMolFeatures())
+    mol_loader = DataLoader(mol, batch_size=1, shuffle=False)
+except ValueError as e:
+    print(e)
 
 #mol= GenMolecules(SMILES, pre_transform=GenMolFeatures())
 #mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
