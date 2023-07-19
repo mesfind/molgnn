@@ -136,52 +136,53 @@ mol= GenMolecules(SMILES, pre_transform=GenMolFeatures())
 mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
 
 
+def predict_logs(SMILES, mol_loader):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    PATH = 'final_models/MolGAT_Sol.pt'
+    model = MolGAT(node_features=30,
+                   hidden_dim=192,
+                   edge_features=12,
+                   num_heads=4,
+                   num_fc_layers=4,
+                   num_conv_layers=3,
+                   dropout=0.0).to(device)
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-PATH='final_models/MolGAT_Sol.pt'
+    # Load Solubility prediction model
+    model.load_state_dict(torch.load(PATH, map_location={'cuda:0': 'cpu'}))
+
+    r_std = 2.3366
+    r_mean = -3.5368
+
+    yp = []
+    model.eval()
+    for data in mol_loader:
+        data.to(device)
+        out2 = model(data.x, data.edge_index, data.batch, data.edge_attr)
+        out = out2 * r_std + r_mean  # Inverse transform
+        yp.append(out.tolist()[0])
+
+    # ---------------------------Result in Mol/L----------------------------
+    df_results = pd.DataFrame(SMILES, columns=['smiles'])
+    df_results["LogS"] = np.array(yp)
+    mask = (df_results.LogS > math.log10(200 * 1e-6))
+    df_results["isSoluble"] = 'No'  # Initialize the column with default values
+    df_results.loc[mask, "isSoluble"] = 'Yes'  # Set values to 1 where the condition is met
+
+    return df_results
+
+logs = predict_logs(SMILES, mol_loader)
+# Display the results in the Streamlit app
+st.header('Solubility')
+formatted_logs = logs.style.format({'LogS': '{:.3f}', 'isSoluble': '{:s}'})
+st.write(formatted_logs)
+download = st.button('Download Results File')
+if download:
+    csv = logs1.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()
+    linko = f'<a href="data:file/csv;base64,{b64}" download="LogS_prediction.csv">Download csv file</a>'
+    st.markdown(linko, unsafe_allow_html=True)
 
 
-model = MolGAT(node_features=30,
-                            hidden_dim=192,
-                            edge_features=12,
-                            num_heads=4,
-                            num_fc_layers=4,
-                            num_conv_layers=3,dropout=0.0).to(device)
-
-#Load Solubility prediction model
-model.load_state_dict(torch.load(PATH,map_location={'cuda:0': 'cpu'}))
-
-
-r_std = 2.3366
-r_mean =-3.5368
-
-yp = []
-model.eval()
-for data in mol_loader:
-    data.to(device)
-    out2= model(data.x , data.edge_index, data.batch, data.edge_attr)
-    out = out2*r_std + r_mean # inverse transform
-    yp.append(out.tolist()[0])
-
-# ---------------------------Result in Mol/L----------------------------
-df_results = pd.DataFrame(SMILES, columns=['smiles'])
-df_results["LogS"]= np.array(yp)
-mask = (df_results.LogS > math.log10(200 * 1e-6))
-df_results["isSoluble"] = 'No'  # Initialize the column with default values
-df_results.loc[mask, "isSoluble"] = 'Yes'  # Set values to 1 where the condition is met
-# ---------------Results DF ---------------------------
-
-st.header('Solubility ')
-formatted_df = df_results.style.format({'LogS': '{:.3f}', 'isSoluble': '{:s}'})
-st.write(formatted_df)
-
-download=st.button('Download Results File')
-# if download:
-csv = df_results.to_csv(index=False)
-b64 = base64.b64encode(csv.encode()).decode()  # some strings
-linko= f'<a href="data:file/csv;base64,{b64}" download="LogS_prediction.csv">Download csv file</a>'
-st.markdown(linko, unsafe_allow_html=True)
- 
 
 #--------------------Notice------------------------
 # About PART
