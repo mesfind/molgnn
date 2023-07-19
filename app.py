@@ -25,7 +25,6 @@ from torch.utils.data import DataLoader, Dataset, Sampler
 from torch_geometric.data import DataLoader
 from rdkit import Chem
 from torch.utils.data import random_split
-# # misc
 from typing import Dict, Iterator, List, Optional, Union, OrderedDict, Tuple
 from functools import reduce
 from sklearn.metrics import mean_squared_error
@@ -33,14 +32,12 @@ from io import BytesIO
 from scipy import stats
 from random import Random
 from scipy import stats
-#needed for show_mols
 import math
 import base64
-# Set the seed
 torch.manual_seed(1234);
 import streamlit as st
 
-# molgat model
+
 
 class MolGAT(torch.nn.Module):
     def __init__(self, node_features, hidden_dim, edge_features, num_heads, num_conv_layers, num_fc_layers, dropout=None):
@@ -130,16 +127,19 @@ if uploaded_file is not None:
         st.dataframe(data[0:1000])
 
 
-
-# st.header('Input SMILES')
-# SMILES[1:] # Skips the dummy first item
-
 # Use only top 1000
 if len(SMILES)>1000:
     SMILES=SMILES[0:1000]
-	
-mol= GenMolecules(SMILES, pre_transform=GenMolFeatures())
-mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
+
+try:
+    molecule = Chem.MolFromSmiles(SMILES)
+        if molecule is None:	
+            raise ValueError("SMILES is not valid.")
+    mol= GenMolecules(SMILES, pre_transform=GenMolFeatures())
+    mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
+
+#mol= GenMolecules(SMILES, pre_transform=GenMolFeatures())
+#mol_loader = DataLoader(mol, batch_size=1,shuffle=False)
 
 
 
