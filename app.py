@@ -37,7 +37,7 @@ import base64
 torch.manual_seed(1234);
 import streamlit as st
 
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 
 st.set_page_config(
     page_title=" Solubility Prediction App",
