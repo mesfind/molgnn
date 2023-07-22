@@ -177,7 +177,7 @@ def predict_logs(SMILES, mol_loader):
 
 logs = predict_logs(SMILES, mol_loader)
 # Display the results in the Streamlit app
-st.header('Solubility')
+st.header('Solubility Results')
 formatted_logs = logs.style.format({'LogS': '{:.3f}', 'isSoluble': '{:s}'})
 st.write(formatted_logs)
 download = st.button('Download Results File')
