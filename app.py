@@ -39,6 +39,14 @@ import streamlit as st
 
 st.set_page_config(layout="wide")
 
+st.set_page_config(
+    page_title=" Solubility Prediction App",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+
+
 class MolGAT(torch.nn.Module):
     def __init__(self, node_features, hidden_dim, edge_features, num_heads, num_conv_layers, num_fc_layers, dropout=None):
         super(MolGAT, self).__init__()
