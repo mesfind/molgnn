@@ -222,7 +222,7 @@ with about_part:
     ''')
 
 
-contacts = st.sidebar.expander("Contact Authors", expanded=False)
+contacts = st.sidebar.expander("Contact Authors", expanded=True)
 with contacts:
     st.write('''
              #### Contact
