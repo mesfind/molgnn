@@ -168,8 +168,8 @@ def predict_logs(SMILES, mol_loader):
 
     # ---------------------------Result in Mol/L----------------------------
     df_results = pd.DataFrame(SMILES, columns=['smiles'])
-    df_results["LogS"] = np.array(yp)
-    mask = (df_results.LogS > math.log10(200 * 1e-6))
+    df_results["Pred_LogS"] = np.array(yp)
+    mask = (df_results.Pred_LogS > math.log10(200 * 1e-6))
     df_results["isSoluble"] = 'No'  # Initialize the column with default values
     df_results.loc[mask, "isSoluble"] = 'Yes'  # Set values to 1 where the condition is met
 
@@ -178,7 +178,7 @@ def predict_logs(SMILES, mol_loader):
 logs = predict_logs(SMILES, mol_loader)
 # Display the results in the Streamlit app
 st.header('Prediction Results')
-formatted_logs = logs.style.format({'LogS': '{:.3f}', 'isSoluble': '{:s}'})
+formatted_logs = logs.style.format({'Pred)LogS': '{:.3f}', 'isSoluble': '{:s}'})
 st.write(formatted_logs)
 download = st.button('Download Results File')
 if download:
