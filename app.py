@@ -182,7 +182,7 @@ formatted_logs = logs.style.format({'LogS': '{:.3f}', 'isSoluble': '{:s}'})
 st.write(formatted_logs)
 download = st.button('Download Results File')
 if download:
-    csv = logs1.to_csv(index=False)
+    csv = formatted_logs.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()
     linko = f'<a href="data:file/csv;base64,{b64}" download="LogS_prediction.csv">Download csv file</a>'
     st.markdown(linko, unsafe_allow_html=True)
