@@ -230,10 +230,9 @@ with contacts:
              For any question you can contact us through email:
                  
              - [Mesfin Diro] (mailto: mesfin.diro@aau.edu.et)
-             - [Chernet Amente](mailto: chernet.amente@aau.edu.et)
-             - Seriani Nicola(mailto: seriani@ictp.it)
              - Qin Wu (mailto: qinwu@bnl.gov)
              - Yedilfana Setarge(yedilfana.setarge@aau.edu.et)
+             - [Chernet Amente](mailto: chernet.amente@aau.edu.et)
              ''')
 
 
