@@ -195,7 +195,7 @@ if download:
 about_part = st.expander("About MolGAT", expanded=False)
 with about_part:
     st.markdown('''
-    #### About
+    #### About Mekonnen
     The MolGAT model is a type of deep learning architecture designed for predicting molecular properties from molecular graphs. 
     It leverages an attention mechanism to selectively focus on crucial parts of the molecular graph with n-dimensional node and edge attributes, 
     enabling accurate property predictions. This  graph-based representation help the model to learn and capture the complex relationships and patterns within molecules,
