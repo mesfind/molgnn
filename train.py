@@ -22,7 +22,7 @@ from torch_geometric.nn.norm import BatchNorm
 import matplotlib.pyplot as plt
 import seaborn as sns
 from rdkit.Chem import rdDepictor
-<<<<<<< HEAD
+
 rdDepictor.SetPreferCoordGen(True)
 sns.set()
 
@@ -30,7 +30,7 @@ sns.set()
 from molgat.utils import NoamLR
 
 
-=======
+
 from utils.utils import NoamLR
 rdDepictor.SetPreferCoordGen(True)
 sns.set()
@@ -207,11 +207,10 @@ for epoch in range(1, args.epochs):
         print(f'Epoch: {epoch:d}, Loss: {train_mse:.7f}, test MSE: {test_mse:.7f}')
         
 #save the model
-<<<<<<< HEAD
+
 PATH='final_models/MolGAT30.pt'
-=======
+
 PATH='final_models/MolGAT.pt'
->>>>>>> 29045e8145848d15355692a1de3067107f206d91
 torch.save(model.state_dict(),PATH)
 
 
@@ -232,9 +231,3 @@ plt.show()
 
 
 
-
-<<<<<<< HEAD
-    
-=======
-    
->>>>>>> 29045e8145848d15355692a1de3067107f206d91
