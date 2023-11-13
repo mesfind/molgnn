@@ -35,7 +35,6 @@ from utils.utils import NoamLR
 rdDepictor.SetPreferCoordGen(True)
 sns.set()
 
->>>>>>> 29045e8145848d15355692a1de3067107f206d91
 
 ## Load the RedDB dataset in PyG graph format
 #transform = T.Compose([MyTransform(), Complete(), T.Distance(norm=False)])
