@@ -162,7 +162,7 @@ git clone https://github.com/mesfind/molgnn.git
 Navigate to the directory:
 
 ```
-cd molgat
+cd molgnn
 
 ```
 
@@ -208,3 +208,7 @@ year = {2023},
 doi = {10.1021/acsomega.3c01295},
 }
 ```
+### Note 
+You can use the trained MolGAT model for predicting solublity of organic molecules using thier SMILES at:
+[MolGAT](https://molgat.streamlit.app)
+
